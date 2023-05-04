@@ -5,7 +5,7 @@
 
 ```yaml
 dependencies:
-    binance_pay: ^0.0.1
+    binance_pay: ^0.0.2
 ```
 ## ⚡ Import
 
@@ -23,7 +23,7 @@ BinancePay pay = BinancePay(
 ```
 
 ### Create an order
-Returns <a href="https://pub.dev/documentation/binance_pay/latest/">OrderResponse</a>
+Returns <a href="https://pub.dev/documentation/binance_pay/latest/binance_pay/OrderResponse-class.html">OrderResponse</a>
 ```dart
 String merchantTradeNo = generateMerchantTradeNo();
 
@@ -44,7 +44,7 @@ OrderResponse response = await pay.createOrder(
 ```
 
 ### Query the order
-Returns <a href="https://pub.dev/documentation/binance_pay/latest/">QueryResponse</a>
+Returns <a href="https://pub.dev/documentation/binance_pay/latest/binance_pay/QueryResponse-class.html">QueryResponse</a>
 ```dart
 
 //Query the order
@@ -56,7 +56,7 @@ QueryResponse queryResponse = await pay.queryOrder(
 ```
 
 ### Close the order
-Returns <a href="https://pub.dev/documentation/binance_pay/latest/">CloseResponse</a>
+Returns <a href="https://pub.dev/documentation/binance_pay/latest/binance_pay/CloseResponse-class.html">CloseResponse</a>
 ```dart
 
 //Close the order

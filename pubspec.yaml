@@ -1,6 +1,6 @@
 name: binance_pay
 description: A Flutter package for integrating Binance Pay API into your mobile applications, enabling users to make payments with ease.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/MarsadMaqsood/binance_pay
 
 environment:
