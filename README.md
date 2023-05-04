@@ -1,39 +1,70 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+ [![Version](https://img.shields.io/pub/v/binance_pay?color=%2354C92F&logo=dart)](https://pub.dev/packages/binance_pay/install) 
+ 
+ 
+## ⭐  Installing
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+```yaml
+dependencies:
+    binance_pay: ^0.0.1
+```
+## ⚡ Import
 
 ```dart
-const like = 'sample';
+import 'package:binance_pay/binance_pay.dart';
 ```
 
-## Additional information
+## 📙 How To Use
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```dart
+BinancePay pay = BinancePay(
+    apiKey: apiKey,
+    apiSecretKey: apiSecret,
+);
+```
+
+### Create an order
+Returns <a href="https://pub.dev/documentation/binance_pay/latest/">OrderResponse</a>
+```dart
+String merchantTradeNo = generateMerchantTradeNo();
+
+//Create an order
+OrderResponse response = await pay.createOrder(
+    body: RequestBody(
+        merchantTradeNo: merchantTradeNo,
+        orderAmount: '1.01',
+        currency: 'BUSD',
+        goodsType: '01',
+        goodsCategory: '1000',
+        referenceGoodsId: '1234567',
+        goodsName: 'Cup Cake',
+        goodsDetail: 'A Yummy cup cake.',
+    ),
+);
+
+```
+
+### Query the order
+Returns <a href="https://pub.dev/documentation/binance_pay/latest/">QueryResponse</a>
+```dart
+
+//Query the order
+QueryResponse queryResponse = await pay.queryOrder(
+    merchantTradeNo: merchantTradeNo,
+    prepayId: response.data!.prepayId,
+);
+
+```
+
+### Close the order
+Returns <a href="https://pub.dev/documentation/binance_pay/latest/">CloseResponse</a>
+```dart
+
+//Close the order
+CloseResponse closeResponse = await pay.closeOrder(
+    merchantTradeNo: merchantTradeNo,
+);
+
+
+
+
+```
