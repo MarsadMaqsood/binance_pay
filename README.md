@@ -5,7 +5,7 @@
 
 ```yaml
 dependencies:
-    binance_pay: ^0.0.2
+    binance_pay: ^0.0.3
 ```
 ## ⚡ Import
 

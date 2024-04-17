@@ -1,6 +1,7 @@
-import 'package:binance_pay/.env.dart';
 import 'package:binance_pay/binance_pay.dart';
 import 'package:flutter/material.dart';
+
+import '.env.dart';
 
 void main() {
   runApp(const MyApp());
