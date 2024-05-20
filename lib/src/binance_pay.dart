@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:binance_pay/binance_pay.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,7 +14,7 @@ class BinancePay {
     String nonce = generateNonceString();
 
     // Construct request body
-    var requestBody = {
+    final requestBody = {
       "env": {
         "terminalType": body.terminalType,
       },
@@ -52,7 +53,7 @@ class BinancePay {
       body: jsonRequest,
     );
 
-    var responseBody = jsonDecode(response.body);
+    final responseBody = jsonDecode(response.body);
 
     return OrderResponse.fromJson(responseBody);
   }
@@ -63,7 +64,7 @@ class BinancePay {
     String nonce = generateNonceString();
 
     // Construct request body
-    var requestBody = {
+    final requestBody = {
       "merchantTradeNo": merchantTradeNo,
       "prepayId": prepayId,
     };
@@ -92,7 +93,7 @@ class BinancePay {
       body: jsonRequest,
     );
 
-    var responseBody = jsonDecode(response.body);
+    final responseBody = jsonDecode(response.body);
 
     return QueryResponse.fromJson(responseBody);
   }
@@ -107,7 +108,7 @@ class BinancePay {
     String nonce = generateNonceString();
 
     // Construct request body
-    var requestBody = {
+    final requestBody = {
       "merchantTradeNo": merchantTradeNo,
       "prepayId": prepayId,
     };
@@ -135,7 +136,7 @@ class BinancePay {
       body: jsonRequest,
     );
 
-    var responseBody = jsonDecode(response.body);
+    final responseBody = jsonDecode(response.body);
 
     return CloseResponse.fromJson(responseBody);
   }
