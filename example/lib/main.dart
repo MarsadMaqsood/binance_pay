@@ -13,19 +13,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Binance Pay Example',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -36,14 +34,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text('Binance Pay Example'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Cup Cake  \$ 1.0',
+              'Cup Cake  \$ 1.01',
             ),
             TextButton(
                 onPressed: () {
@@ -56,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  makePayment() async {
+  Future<void> makePayment() async {
     BinancePay pay = BinancePay(
       apiKey: apiKey,
       apiSecretKey: apiSecret,
@@ -69,18 +67,23 @@ class _MyHomePageState extends State<MyHomePage> {
         merchantTradeNo: tradeNo,
         orderAmount: '1.01',
         currency: 'BUSD',
-        goodsType: '01',
-        goodsCategory: '1000',
-        referenceGoodsId: 'referenceGoodsId',
-        goodsName: 'goodsName',
-        goodsDetail: 'goodsDetail',
+        description: 'A delicious cup cake',
+        goodsList: [
+          GoodsModel(
+            goodsType: '01',
+            goodsCategory: '1000',
+            referenceGoodsId: '1234567',
+            goodsName: 'Cup Cake',
+            goodsDetail: 'A Yummy cup cake.',
+          ),
+        ],
       ),
     );
 
     ///query the order
     QueryResponse queryResponse = await pay.queryOrder(
       merchantTradeNo: tradeNo,
-      prepayId: response.data!.prepayId,
+      prepayId: response.data?.prepayId,
     );
 
     debugPrint(queryResponse.status);

@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:binance_pay/binance_pay.dart';
 import 'package:http/http.dart' as http;
 
+import 'helper/exception.dart';
+
 class BinancePay {
   final String apiKey;
   final String apiSecretKey;
@@ -11,7 +13,7 @@ class BinancePay {
 
   Future<OrderResponse> createOrder({required RequestBody body}) async {
     // Generate nonce string
-    String nonce = generateNonceString();
+    final nonce = generateNonceString();
 
     // Construct request body
     final requestBody = {
@@ -21,23 +23,17 @@ class BinancePay {
       "merchantTradeNo": body.merchantTradeNo,
       "orderAmount": body.orderAmount,
       "currency": body.currency,
-      "goods": {
-        "goodsType": body.goodsType,
-        "goodsCategory": body.goodsCategory,
-        "referenceGoodsId": body.referenceGoodsId,
-        "goodsName": body.goodsName,
-        "goodsDetail": body.goodsDetail,
-      }
+      "description": body.description,
+      "goodsDetails": body.goodsList.map((element) => element.toMap()).toList(),
     };
 
-    String jsonRequest = json.encode(requestBody);
-    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    final jsonRequest = json.encode(requestBody);
+    final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    final payload = "$timestamp\n$nonce\n$jsonRequest\n";
+    final signature = generateSignature(payload, apiSecretKey).toUpperCase();
 
-    String payload = "$timestamp\n$nonce\n$jsonRequest\n";
-
-    String signature = generateSignature(payload, apiSecretKey).toUpperCase();
-
-    String url = "https://bpay.binanceapi.com/binancepay/openapi/v2/order";
+    // v3
+    final url = "https://bpay.binanceapi.com/binancepay/openapi/v3/order";
 
     Map<String, String> headers = {
       "Content-Type": "application/json",
@@ -58,26 +54,44 @@ class BinancePay {
     return OrderResponse.fromJson(responseBody);
   }
 
-  Future<QueryResponse> queryOrder(
-      {required String prepayId, required String merchantTradeNo}) async {
+  Future<QueryResponse> queryOrder({
+    /// The unique Binance Pay order ID.
+    ///
+    /// This property holds the order ID assigned by Binance Pay after a successful
+    /// request. It might be `null` if the request is still pending, failed, or canceled.
+    String? prepayId,
+
+    /// A unique identifier for the merchant's order (optional).
+    ///
+    /// This property allows you to assign a unique ID to your order within your
+    /// application. However, it is ignored by Binance Pay if a `prepayId` is
+    /// already provided.
+    ///
+    /// Use `merchantTradeNo` to track orders on your end and potentially correlate
+    /// them with the `prepayId` received from Binance Pay.
+    String? merchantTradeNo,
+  }) async {
+    if (prepayId == null && merchantTradeNo == null) {
+      throw MissingRequestException('prepayId or merchantTradeNo is required');
+    }
+
     // Generate nonce string
-    String nonce = generateNonceString();
+    final nonce = generateNonceString();
 
     // Construct request body
-    final requestBody = {
-      "merchantTradeNo": merchantTradeNo,
-      "prepayId": prepayId,
-    };
+    final requestBody = {};
+    if (prepayId != null) {
+      requestBody['prepayId'] = prepayId;
+    } else {
+      requestBody['merchantTradeNo'] = merchantTradeNo;
+    }
 
-    String jsonRequest = json.encode(requestBody);
-    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    final jsonRequest = json.encode(requestBody);
+    final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    final payload = "$timestamp\n$nonce\n$jsonRequest\n";
+    final signature = generateSignature(payload, apiSecretKey).toUpperCase();
 
-    String payload = "$timestamp\n$nonce\n$jsonRequest\n";
-
-    String signature = generateSignature(payload, apiSecretKey).toUpperCase();
-
-    String url =
-        "https://bpay.binanceapi.com/binancepay/openapi/v2/order/query";
+    final url = "https://bpay.binanceapi.com/binancepay/openapi/v2/order/query";
 
     Map<String, String> headers = {
       "Content-Type": "application/json",
@@ -98,29 +112,47 @@ class BinancePay {
     return QueryResponse.fromJson(responseBody);
   }
 
-  Future<CloseResponse> closeOrder(
-      {String? prepayId, String? merchantTradeNo}) async {
+  Future<CloseResponse> closeOrder({
+    /// The unique Binance Pay order ID.
+    ///
+    /// This property holds the order ID assigned by Binance Pay after a successful
+    /// request. It might be `null` if the request is still pending, failed, or canceled.
+    String? prepayId,
+
+    /// A unique identifier for the merchant's order (optional).
+    ///
+    /// This property allows you to assign a unique ID to your order within your
+    /// application. However, it is ignored by Binance Pay if a `prepayId` is
+    /// already provided.
+    ///
+    /// Use `merchantTradeNo` to track orders on your end and potentially correlate
+    /// them with the `prepayId` received from Binance Pay.
+    String? merchantTradeNo,
+  }) async {
     if (prepayId == null && merchantTradeNo == null) {
-      throw Exception('Both prepayId and merchantTradeNo cannot be null.');
+      throw MissingRequestException('prepayId or merchantTradeNo is required');
     }
 
     // Generate nonce string
-    String nonce = generateNonceString();
+    final String nonce = generateNonceString();
 
     // Construct request body
-    final requestBody = {
-      "merchantTradeNo": merchantTradeNo,
-      "prepayId": prepayId,
-    };
+    final requestBody = {};
+    if (prepayId != null) {
+      requestBody['prepayId'] = prepayId;
+    } else {
+      requestBody['merchantTradeNo'] = merchantTradeNo;
+    }
 
-    String jsonRequest = json.encode(requestBody);
-    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    final String jsonRequest = json.encode(requestBody);
+    final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
 
-    String payload = "$timestamp\n$nonce\n$jsonRequest\n";
+    final String payload = "$timestamp\n$nonce\n$jsonRequest\n";
 
-    String signature = generateSignature(payload, apiSecretKey).toUpperCase();
+    final String signature =
+        generateSignature(payload, apiSecretKey).toUpperCase();
 
-    String url = "https://bpay.binanceapi.com/binancepay/openapi/order/close";
+    final url = "https://bpay.binanceapi.com/binancepay/openapi/order/close";
 
     Map<String, String> headers = {
       "Content-Type": "application/json",

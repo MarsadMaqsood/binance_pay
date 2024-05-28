@@ -1,8 +1,8 @@
 class OrderResponse {
-  String status;
-  String code;
-  OrderResponseData? data;
-  String? errorMessage;
+  final String status;
+  final String code;
+  final OrderResponseData? data;
+  final String? errorMessage;
 
   OrderResponse(this.status, this.code, this.data, this.errorMessage);
 
@@ -17,14 +17,16 @@ class OrderResponse {
 }
 
 class OrderResponseData {
-  String prepayId;
-  String terminalType;
-  int expireTime;
-  String qrcodeLink;
-  String qrContent;
-  String checkoutUrl;
-  String deeplink;
-  String universalUrl;
+  final String prepayId;
+  final String terminalType;
+  final int expireTime;
+  final String qrcodeLink;
+  final String qrContent;
+  final String checkoutUrl;
+  final String deeplink;
+  final String universalUrl;
+  final String currency;
+  final double totalFee;
 
   OrderResponseData(
     this.prepayId,
@@ -35,6 +37,8 @@ class OrderResponseData {
     this.checkoutUrl,
     this.deeplink,
     this.universalUrl,
+    this.currency,
+    this.totalFee,
   );
 
   factory OrderResponseData.fromJson(Map<String, dynamic> json) {
@@ -47,6 +51,8 @@ class OrderResponseData {
       json['checkoutUrl'],
       json['deeplink'],
       json['universalUrl'],
+      json['currency'],
+      json['totalFee'],
     );
   }
 }

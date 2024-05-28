@@ -1,3 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 class RequestBody {
   ///This parameter specifies the terminal type of the merchant service. The following are the valid values for this parameter:
   ///
@@ -41,20 +44,45 @@ class RequestBody {
   /// String orderAmount = '10.00';
   /// ```
   ///
-  String orderAmount;
+  final String orderAmount;
 
-  /// [currency] represents the order currency in upper case. Only "BUSD", "USDT", "MBOX" can be accepted,
+  /// [currency] represents the order currency in UPPERCASE. Only cryptocurrency is accepted e.g. "USDT", "BNB", "BTC",
   ///
   /// fiat is not supported. It is a [String] type variable.
-  String currency;
+  final String currency;
 
+  /// A description of the goods being purchased.
+  ///
+  /// This description will be displayed on the checkout page as both the
+  /// product name and product details.
+  ///
+  final String description;
+
+  /// A list of goods that can be purchased.
+  ///
+  /// See [GoodsModel] for more details
+  final List<GoodsModel> goodsList;
+
+  RequestBody({
+    this.terminalType = 'APP',
+    required this.merchantTradeNo,
+    required this.orderAmount,
+    required this.currency,
+    required this.description,
+    required this.goodsList,
+  });
+}
+
+///
+
+class GoodsModel {
   /// Represents the type of goods for an order in a Binance Pay transaction.
   ///
   /// The possible values for [goodsType] are:
   /// * '01': for Tangible Goods
   /// * '02': for Virtual Goods
   ///
-  String goodsType;
+  final String goodsType;
 
   ///A string representing the category of goods for a payment order.
   ///
@@ -80,29 +108,50 @@ class RequestBody {
   ///* F000: Industry & Science
   ///* Z000: Others
   ///
-  String goodsCategory;
+  final String goodsCategory;
 
   ///The unique ID to identify the goods.
-  String referenceGoodsId;
+  final String referenceGoodsId;
 
   /// The name of the goods being purchased.
   ///
   /// The name must be a string with a maximum length of 256 characters.
   /// Special characters such as quotation marks or emojis are not allowed.
-  String goodsName;
+  final String goodsName;
 
   ///Detailed description of the goods being purchased.
-  String goodsDetail;
+  final String goodsDetail;
 
-  RequestBody({
-    this.terminalType = 'APP',
-    required this.merchantTradeNo,
-    required this.orderAmount,
-    required this.currency,
+  GoodsModel({
     required this.goodsType,
     required this.goodsCategory,
     required this.referenceGoodsId,
     required this.goodsName,
     required this.goodsDetail,
   });
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'goodsType': goodsType,
+      'goodsCategory': goodsCategory,
+      'referenceGoodsId': referenceGoodsId,
+      'goodsName': goodsName,
+      'goodsDetail': goodsDetail,
+    };
+  }
+
+  factory GoodsModel.fromMap(Map<String, dynamic> map) {
+    return GoodsModel(
+      goodsType: map['goodsType'] as String,
+      goodsCategory: map['goodsCategory'] as String,
+      referenceGoodsId: map['referenceGoodsId'] as String,
+      goodsName: map['goodsName'] as String,
+      goodsDetail: map['goodsDetail'] as String,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory GoodsModel.fromJson(String source) =>
+      GoodsModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

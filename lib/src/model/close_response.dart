@@ -1,8 +1,8 @@
 class CloseResponse {
-  String status;
-  String code;
-  bool? data;
-  String? errorMessage;
+  final String status;
+  final String code;
+  final bool? data;
+  final String? errorMessage;
 
   CloseResponse({
     required this.status,
